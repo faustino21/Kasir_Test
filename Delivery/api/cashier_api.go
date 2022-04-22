@@ -76,6 +76,11 @@ func (cs *CashierApi) RegisterCashier() gin.HandlerFunc {
 			return
 		}
 
+		if len(cashierReq.Passcode) != 6 {
+			commonResp.NewAppHttpResponse(c).FailedResp(http.StatusBadRequest, commonResp.NewFailedMessage("Password must be 6 characters"))
+			return
+		}
+
 		data, err := cs.cashier.RegisterCashier(cashierReq.Name, cashierReq.Passcode)
 		if err != nil {
 			util.Log.Error().Msgf(funcName+" : %w", err)
