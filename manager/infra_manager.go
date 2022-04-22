@@ -1,24 +1,24 @@
 package manager
 
 import (
-	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 type InfraManager interface {
-	SqlDb() *sql.DB
+	SqlDb() *sqlx.DB
 }
 
 type infra struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func (i *infra) SqlDb() *sql.DB {
+func (i *infra) SqlDb() *sqlx.DB {
 	return i.db
 }
 
 func NewInfraManager(dataSourceName string) InfraManager {
-	db, err := sql.Open("mysql", dataSourceName)
+	db, err := sqlx.Connect("mysql", dataSourceName)
 	if err != nil {
 		panic(err)
 	}

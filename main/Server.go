@@ -1,8 +1,8 @@
 package main
 
 import (
+	"Kasir_Test/Delivery/api"
 	"Kasir_Test/config"
-	"Kasir_Test/manager"
 	"Kasir_Test/util"
 	"github.com/gin-gonic/gin"
 )
@@ -12,11 +12,8 @@ type AppServer interface {
 }
 
 type appServer struct {
-	r              *gin.Engine
-	c              config.Config
-	InfraManager   manager.InfraManager
-	RepoManager    manager.RepoManager
-	UseCaseManager manager.UseCaseManager
+	r *gin.Engine
+	c config.Config
 }
 
 func (a *appServer) initHandler() {
@@ -24,7 +21,8 @@ func (a *appServer) initHandler() {
 }
 
 func (a *appServer) v1() {
-
+	cashierGroup := a.r.Group("/cashiers")
+	api.CashierApiRoute(cashierGroup, a.c.UseCaseManager.CashierUseCase())
 }
 
 func (a *appServer) Run() {

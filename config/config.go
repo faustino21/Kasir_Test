@@ -64,7 +64,7 @@ func NewConfig(path, name string) Config {
 	cfg = cfg.Configuration(path, name)
 	util.NewLog(cfg.LogLevel)
 
-	dataSourceName := fmt.Sprintf("%s:%s@(%s:%s)/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
+	dataSourceName := fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
 	cfg.InfraManager = manager.NewInfraManager(dataSourceName)
 	cfg.RepoManager = manager.NewRepoManager(cfg.InfraManager)
 	cfg.UseCaseManager = manager.NewUseCaseManager(cfg.RepoManager)
