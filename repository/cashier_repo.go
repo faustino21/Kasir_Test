@@ -29,13 +29,13 @@ func (c *CashierRepoImpl) GetAll(limit, skip int) (int, *[]httpResp.ListCashier,
 	var total int
 	err := c.db.Select(&cashier, fmt.Sprintf("SELECT cashier_id, name FROM cashier WHERE deleted_at IS NULL LIMIT %d OFFSET %d", limit, skip))
 	if err != nil {
-		util.Log.Error().Msgf(funcName+" : %w", err)
+		util.Log.Error().Msgf(funcName+" : %v", err)
 		return 0, nil, errors.New(err.Error())
 	}
 
 	err = c.db.Get(&total, fmt.Sprintf("SELECT COUNT(cashier_id) FROM cashier"))
 	if err != nil {
-		util.Log.Error().Msgf(funcName+" : %w", err)
+		util.Log.Error().Msgf(funcName+" : %v", err)
 		return 0, nil, errors.New(err.Error())
 	}
 
@@ -48,7 +48,7 @@ func (c *CashierRepoImpl) Get(cashierId int) (*entity.Cashier, error) {
 	var cashier entity.Cashier
 	err := c.db.Get(&cashier, "SELECT cashier_id, name FROM cashier WHERE cashier_id = ?", cashierId)
 	if err != nil {
-		util.Log.Error().Msgf(funcName+" : %w", err)
+		util.Log.Error().Msgf(funcName+" : %v", err)
 		return nil, errors.New(err.Error())
 	}
 	return &cashier, nil
@@ -62,19 +62,19 @@ func (c *CashierRepoImpl) Insert(name, passcode string) (*entity.Cashier, error)
 	row := tx.MustExec(fmt.Sprintf("INSERT INTO cashier (name, password) VALUES (\"%s\", \"%s\")", name, passcode))
 	rowAffected, err := row.RowsAffected()
 	if rowAffected == 0 && err != nil {
-		util.Log.Error().Msgf(funcName+".rowsAffected : %w", err)
+		util.Log.Error().Msgf(funcName+".rowsAffected : %v", err)
 		return nil, errors.New(err.Error())
 	}
 
 	id, err := row.LastInsertId()
 	err = tx.Get(&cashier, "SELECT * FROM cashier WHERE cashier_id = ?", id)
 	if err != nil {
-		util.Log.Error().Msgf(funcName+".lasInsert : %w", err)
+		util.Log.Error().Msgf(funcName+".lasInsert : %v", err)
 		return nil, errors.New(err.Error())
 	}
 	err = tx.Commit()
 	if err != nil {
-		util.Log.Error().Msgf(funcName+".commit : %w", err)
+		util.Log.Error().Msgf(funcName+".commit : %v", err)
 		return nil, errors.New(err.Error())
 	}
 	return &cashier, nil
@@ -92,7 +92,7 @@ func (c *CashierRepoImpl) Update(id int, name, passcode string) error {
 	}
 	err := tx.Commit()
 	if err != nil {
-		util.Log.Error().Msgf(funcName+".commit : %w", err)
+		util.Log.Error().Msgf(funcName+".commit : %v", err)
 		return fmt.Errorf(err.Error())
 	}
 	return nil
@@ -107,7 +107,7 @@ func (c *CashierRepoImpl) Delete(id int) error {
 	tx.MustExec(fmt.Sprintf("UPDATE cashier SET deleted_at = \"%v\" WHERE cashier_id = %d", timeStamp, id))
 	err := tx.Commit()
 	if err != nil {
-		util.Log.Error().Msgf(funcName+".commit : %w", err)
+		util.Log.Error().Msgf(funcName+".commit : %v", err)
 		return fmt.Errorf(err.Error())
 	}
 	return nil

@@ -2,6 +2,7 @@ package main
 
 import (
 	"Kasir_Test/Delivery/api"
+	"Kasir_Test/Delivery/middleware"
 	"Kasir_Test/config"
 	"Kasir_Test/util"
 	"github.com/gin-gonic/gin"
@@ -17,12 +18,16 @@ type appServer struct {
 }
 
 func (a *appServer) initHandler() {
+	a.r.Use(middleware.AuthTokenMiddleware())
 	a.v1()
 }
 
 func (a *appServer) v1() {
 	cashierGroup := a.r.Group("/cashiers")
+	productGroup := a.r.Group("products")
 	api.CashierApiRoute(cashierGroup, a.c.UseCaseManager.CashierUseCase())
+	api.LoginApiRoute(cashierGroup, a.c.UseCaseManager.LoginUseCase())
+	api.ProductApiRoute(productGroup, a.c.UseCaseManager.ProductUseCase())
 }
 
 func (a *appServer) Run() {

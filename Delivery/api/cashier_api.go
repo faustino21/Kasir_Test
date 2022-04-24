@@ -83,7 +83,7 @@ func (cs *CashierApi) RegisterCashier() gin.HandlerFunc {
 
 		data, err := cs.cashier.RegisterCashier(cashierReq.Name, cashierReq.Passcode)
 		if err != nil {
-			util.Log.Error().Msgf(funcName+" : %w", err)
+			util.Log.Error().Msgf(funcName+" : %v", err)
 			commonResp.NewAppHttpResponse(c).FailedResp(http.StatusBadRequest, commonResp.NewFailedMessage(err.Error()))
 			return
 		}
